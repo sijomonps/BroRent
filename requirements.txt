@@ -1,0 +1,9 @@
+django
+gunicorn
+whitenoise
+psycopg2-binary
+boto3
+django-storages
+pillow
+django-widget-tweaks
+django-jazzmin
