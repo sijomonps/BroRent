@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BroRent</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-xl">BroRent</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="hover:underline">Home</a>
+                    <a href="{% url 'item_create' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition">+ Add Item</a>
+                    {% if user.is_authenticated %}
+                        <div class="relative group flex items-center space-x-2">
+                            {% if user.image %}
+                                <img src="{{ user.image.url }}" alt="{{ user.username }}" class="w-8 h-8 rounded-full border-2 border-white object-cover">
+                            {% else %}
+                                <div class="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center text-white font-bold">{{ user.username|slice:":1"|upper }}</div>
+                            {% endif %}
+                            <button class="font-semibold focus:outline-none group-hover:text-blue-300" id="userMenuBtn">{{ user.username }}</button>
+                            <div class="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded shadow-lg py-2 z-50 hidden group-hover:block" id="userMenu">
+                                <a href="{% url 'profile' %}" class="block px-4 py-2 hover:bg-gray-100">View Profile</a>
+                                <a href="{% url 'password_change' %}" class="block px-4 py-2 hover:bg-gray-100">Change Password</a>
+                                <a href="{% url 'user_items' %}" class="block px-4 py-2 hover:bg-gray-100">My Rented Items</a>
+                                <a href="{% url 'user_lended_items' %}" class="block px-4 py-2 hover:bg-gray-100">My Lended Items</a>
+                                <a href="{% url 'logout' %}" class="block px-4 py-2 hover:bg-gray-100 text-red-600">Logout</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Content -->
+    <main class="max-w-7xl mx-auto py-8 px-4">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

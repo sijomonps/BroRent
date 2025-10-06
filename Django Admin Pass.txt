@@ -1,0 +1,6 @@
+Django Admin Pass
+
+
+username -- admin
+email -- admin@gmail.com
+pass -- admin

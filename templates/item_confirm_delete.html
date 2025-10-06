@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-8">
+    <h1 class="text-xl font-bold text-gray-900 mb-6">Are you sure you want to delete "{{ item.name }}"?</h1>
+    <form method="post" class="flex space-x-4">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded transition">Yes, delete</button>
+        <a href="{% url 'item_detail' pk=item.pk %}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded transition">Cancel</a>
+    </form>
+</div>
+{% endblock %}

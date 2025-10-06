@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-lg mx-auto bg-white rounded-lg shadow-md p-8">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Add a New Item for Rent</h1>
+    <style>
+        input, select, textarea {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            margin-bottom: 0.5rem;
+            outline: none;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px #2563eb33;
+        }
+    </style>
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+        {% if form.errors %}
+            <div class="mb-2 text-red-600 text-sm">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% for field in form %}
+            <div>
+                <label class="block text-gray-700 text-sm mb-1">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <div class="text-xs text-gray-500">{{ field.help_text }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition w-full">Add Item</button>
+    </form>
+</div>
+{% endblock %}

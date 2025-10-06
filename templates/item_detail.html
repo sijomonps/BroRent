@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+    {% if item.image %}
+    <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-full h-64 object-cover">
+    {% endif %}
+    <div class="p-6">
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ item.name }}</h1>
+        <p class="text-gray-700 mb-2">Rs. {{ item.price }}{% if item.per_day %} <span class="text-xs text-gray-500">/ day</span>{% endif %}</p>
+        <div class="mb-4 text-sm text-gray-600">
+            <div>Owner: {{ item.owner.username }}</div>
+            <div>Phone: {{ item.owner.phone_number }}</div>
+            <div>Hostel: {{ item.owner.hostel_name }} | Room: {{ item.owner.room_number }}</div>
+        </div>
+        <div class="flex space-x-2 mb-4">
+            <a href="{% url 'item_update' pk=item.pk %}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition">Edit Item</a>
+            <a href="{% url 'item_delete' pk=item.pk %}" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded transition">Delete Item</a>
+        </div>
+        <a href="{% url 'home' %}" class="text-blue-600 hover:underline">Back to Home</a>
+    </div>
+</div>
+{% endblock %}
