@@ -6,6 +6,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
+
+def landing_view(request):
+    """Landing page for unauthenticated users"""
+    if request.user.is_authenticated:
+        return redirect('home')
+    return render(request, 'landing.html')
+
 def register_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST, request.FILES)
@@ -42,6 +49,7 @@ def home_page_view(request):
     }
     return render(request, 'index.html', context)
 
+@login_required(login_url='login')
 def item_detail_view(request, pk):
     item = Item.objects.get(pk=pk) # Get one item by its primary key (pk)
     context = {
@@ -54,6 +62,7 @@ from django.shortcuts import render, redirect
 from .models import Item
 from .forms import ItemForm
 
+@login_required(login_url='login')
 def item_list_view(request):
     items = Item.objects.all()
     return render(request, 'item_list.html', {'items': items})
@@ -73,6 +82,7 @@ def create_item_view(request):
     context = {'form': form}
     return render(request, 'item_form.html', context)
 
+@login_required(login_url='login')
 def update_item_view(request, pk):
     item = get_object_or_404(Item, pk=pk)
     if request.method == 'POST':
@@ -86,6 +96,7 @@ def update_item_view(request, pk):
     context = {'form': form}
     return render(request, 'item_form.html', context)
 
+@login_required(login_url='login')
 def delete_item_view(request, pk):
     item = get_object_or_404(Item, pk=pk)
     if request.method == 'POST':

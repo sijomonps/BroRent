@@ -16,7 +16,7 @@
                     <span class="font-bold text-xl">BroRent</span>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <a href="/" class="hover:underline">Home</a>
+                    <a href="{% url 'home' %}" class="hover:underline">Home</a>
                     <a href="{% url 'item_create' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition">+ Add Item</a>
                     {% if user.is_authenticated %}
                         <div class="relative group flex items-center space-x-2">
