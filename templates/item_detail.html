@@ -13,10 +13,12 @@
             <div>Phone: {{ item.owner.phone_number }}</div>
             <div>Hostel: {{ item.owner.hostel_name }} | Room: {{ item.owner.room_number }}</div>
         </div>
+        {% if user == item.owner or user.is_superuser %}
         <div class="flex space-x-2 mb-4">
             <a href="{% url 'item_update' pk=item.pk %}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition">Edit Item</a>
             <a href="{% url 'item_delete' pk=item.pk %}" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded transition">Delete Item</a>
         </div>
+        {% endif %}
         <a href="{% url 'home' %}" class="text-blue-600 hover:underline">Back to Home</a>
     </div>
 </div>

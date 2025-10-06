@@ -14,6 +14,15 @@ class CustomUser(AbstractUser):
 
 # Make sure this whole class is in your pages/models.py file
 class Item(models.Model):
+    CATEGORY_CHOICES = [
+        ('clothes', 'Clothes'),
+        ('accessories', 'Accessories'),
+        ('gadgets', 'Gadgets'),
+        ('books', 'Books'),
+        ('sports', 'Sports Equipment'),
+        ('others', 'Others'),
+    ]
+    
     name = models.CharField(max_length=100)
     description = models.TextField()
     price = models.DecimalField(max_digits=7, decimal_places=2)
@@ -22,6 +31,7 @@ class Item(models.Model):
     is_available = models.BooleanField(default=True)
     per_day = models.BooleanField(default=False, help_text='Is this price per day?')
     date_posted = models.DateTimeField(auto_now_add=True)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='others')
 
     def __str__(self):
         return self.name

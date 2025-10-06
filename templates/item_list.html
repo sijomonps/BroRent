@@ -1,19 +1,96 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Item List</title>
+    <title>Item List - BroRent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Available Items</h1>
-    {% for item in items %}
-        <div style="border:1px solid #ccc; padding:16px; margin-bottom:16px;">
-            <img src="{{ item.image.url }}" alt="{{ item.name }}" style="max-width:200px; max-height:200px;">
-            <h2>{{ item.name }}</h2>
-            <p><strong>Price:</strong> ${{ item.price }}</p>
-            <p>{{ item.description }}</p>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Search Form -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4">Search Items</h2>
+            <form method="get" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Search Input -->
+                    <div>
+                        {{ form.search.label_tag }}
+                        {{ form.search|add_class:"w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" }}
+                    </div>
+                    
+                    <!-- Category Filter -->
+                    <div>
+                        {{ form.category.label_tag }}
+                        {{ form.category|add_class:"w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" }}
+                    </div>
+                    
+                    <!-- Sort By -->
+                    <div>
+                        {{ form.sort_by.label_tag }}
+                        {{ form.sort_by|add_class:"w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" }}
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Date Range -->
+                    <div>
+                        {{ form.date_from.label_tag }}
+                        {{ form.date_from|add_class:"w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" }}
+                    </div>
+                    <div>
+                        {{ form.date_to.label_tag }}
+                        {{ form.date_to|add_class:"w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" }}
+                    </div>
+                    
+                    <!-- Availability Checkbox -->
+                    <div class="flex items-center space-x-2">
+                        {{ form.availability }}
+                        <label for="{{ form.availability.id_for_label }}" class="text-gray-700">Show only available items</label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                    Search
+                </button>
+            </form>
         </div>
-    {% empty %}
-        <p>No items available.</p>
-    {% endfor %}
+
+        <!-- Items Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for item in items %}
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-full h-48 object-cover">
+                    {% else %}
+                        <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                            <span class="text-gray-500">No image available</span>
+                        </div>
+                    {% endif %}
+                    <div class="p-4">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-lg font-bold">{{ item.name }}</h3>
+                            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+                                {{ item.get_category_display }}
+                            </span>
+                        </div>
+                        <p class="text-gray-600 text-sm mt-2">{{ item.description|truncatewords:20 }}</p>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span class="text-lg font-bold text-green-600">${{ item.price }}{% if item.per_day %}/day{% endif %}</span>
+                            <span class="text-sm text-gray-500">Posted {{ item.date_posted|timesince }} ago</span>
+                        </div>
+                        <div class="mt-4">
+                            <a href="{% url 'item_detail' item.pk %}" 
+                               class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full text-center">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-span-full text-center py-12">
+                    <p class="text-gray-500 text-lg">No items found matching your criteria.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 </body>
 </html>
