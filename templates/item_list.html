@@ -5,6 +5,27 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
+    <header class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex items-center justify-between">
+            <a href="{% url 'landing' %}" class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-blue-500 rounded-lg flex items-center justify-center shadow">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <span class="font-bold text-xl text-gray-800">BroRent</span>
+            </a>
+            <div>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'profile' %}" class="text-gray-700 hover:text-indigo-600 mr-4">Profile</a>
+                    <a href="{% url 'logout' %}" class="text-gray-700 hover:text-indigo-600">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-gray-700 hover:text-indigo-600 mr-4">Login</a>
+                    <a href="{% url 'register' %}" class="bg-indigo-600 text-white px-3 py-1 rounded">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
     <div class="container mx-auto px-4 py-8">
         <!-- Search Form -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-8">
@@ -73,6 +94,19 @@
                             </span>
                         </div>
                         <p class="text-gray-600 text-sm mt-2">{{ item.description|truncatewords:20 }}</p>
+                        
+                        <!-- Owner Info -->
+                        <div class="mt-3 flex items-center space-x-2">
+                            {% if item.owner.image %}
+                                <img src="{{ item.owner.image.url }}" alt="{{ item.owner.username }}" class="w-6 h-6 rounded-full border border-gray-300 object-cover">
+                            {% else %}
+                                <div class="w-6 h-6 rounded-full bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 flex items-center justify-center">
+                                    <span class="text-white text-xs font-bold">{{ item.owner.username|first|upper }}</span>
+                                </div>
+                            {% endif %}
+                            <span class="text-xs text-gray-500">by {{ item.owner.username }}</span>
+                        </div>
+                        
                         <div class="mt-4 flex justify-between items-center">
                             <span class="text-lg font-bold text-green-600">${{ item.price }}{% if item.per_day %}/day{% endif %}</span>
                             <span class="text-sm text-gray-500">Posted {{ item.date_posted|timesince }} ago</span>

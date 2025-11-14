@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+            <svg class="w-8 h-8 mr-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+            Notifications
+        </h1>
+        {% if unread_notifications_count > 0 %}
+        <p class="text-gray-600 mt-2 ml-11">
+            You have <span class="font-semibold text-indigo-600">{{ unread_notifications_count }}</span> unread notification{{ unread_notifications_count|pluralize }}
+        </p>
+        {% endif %}
+    </div>
+
+    {% if notifications %}
+        <div class="space-y-4">
+            {% for n in notifications %}
+                <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border-l-4 
+                    {% if not n.read %}
+                        border-indigo-500
+                    {% else %}
+                        border-gray-200
+                    {% endif %}">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <!-- Notification Icon -->
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0">
+                                        {% if n.type == 'rental_request' %}
+                                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                        </div>
+                                        {% elif n.type == 'request_approved' %}
+                                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                        </div>
+                                        {% elif n.type == 'request_rejected' %}
+                                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                        </div>
+                                        {% elif n.type == 'item_returned' %}
+                                        <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+                                            </svg>
+                                        </div>
+                                        {% else %}
+                                        <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-gray-900 font-medium">{{ n.message }}</p>
+                                        <div class="flex items-center space-x-2 mt-1">
+                                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            <p class="text-sm text-gray-500">{{ n.created_at|timesince }} ago</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Show rental details for rental requests -->
+                                {% if n.type == 'rental_request' and n.rental %}
+                                    <div class="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                                            <div class="flex items-center space-x-2">
+                                                <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                                </svg>
+                                                <span class="text-gray-700"><strong>Item:</strong> {{ n.rental.item.name }}</span>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                                </svg>
+                                                <span class="text-gray-700"><strong>Requested by:</strong> {{ n.rental.borrower.username }}</span>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                                </svg>
+                                                <span class="text-gray-700"><strong>Duration:</strong> {{ n.rental.start_date|date:'M d' }} - {{ n.rental.end_date|date:'M d, Y' }}</span>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                <span class="text-gray-700"><strong>Total:</strong> ₹{{ n.rental.total_price }}</span>
+                                            </div>
+                                        </div>
+                                        {% if n.rental.notes %}
+                                        <div class="mt-3 pt-3 border-t border-blue-200">
+                                            <p class="text-sm text-gray-700"><strong>Notes:</strong> {{ n.rental.notes }}</p>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- Accept/Reject buttons for pending rental requests -->
+                                        {% if n.rental.status == 'pending' %}
+                                            <div class="mt-4 flex space-x-3">
+                                                <a href="{% url 'rental_accept' pk=n.rental.pk %}" 
+                                                   class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-semibold rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg">
+                                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                                    </svg>
+                                                    Accept Request
+                                                </a>
+                                                <a href="{% url 'rental_reject' pk=n.rental.pk %}" 
+                                                   class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-semibold rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-md hover:shadow-lg">
+                                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                                    </svg>
+                                                    Reject Request
+                                                </a>
+                                            </div>
+                                        {% elif n.rental.status == 'approved' %}
+                                            <div class="mt-3">
+                                                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold bg-green-100 text-green-800 border border-green-200">
+                                                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                                    </svg>
+                                                    Request Approved
+                                                </span>
+                                            </div>
+                                        {% elif n.rental.status == 'rejected' %}
+                                            <div class="mt-3">
+                                                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold bg-red-100 text-red-800 border border-red-200">
+                                                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                                    </svg>
+                                                    Request Rejected
+                                                </span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="flex items-center space-x-3 ml-4 flex-shrink-0">
+                                {% if not n.read %}
+                                <a href="{% url 'notification_mark_read' pk=n.pk %}?next={{ request.get_full_path|urlencode }}" 
+                                   class="inline-flex items-center px-3 py-1.5 text-xs text-indigo-600 hover:text-white hover:bg-indigo-600 font-medium border border-indigo-600 rounded-lg transition-all duration-200">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    Mark Read
+                                </a>
+                                {% else %}
+                                <span class="text-xs text-gray-400 font-medium">Read</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="bg-white rounded-xl shadow-md p-12 text-center">
+            <svg class="w-20 h-20 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2">No Notifications</h3>
+            <p class="text-gray-500">You're all caught up! Check back later for updates.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+

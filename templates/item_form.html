@@ -1,46 +1,239 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="max-w-lg mx-auto bg-white rounded-lg shadow-md p-8">
-    <h1 class="text-2xl font-bold text-gray-900 mb-6">Add a New Item for Rent</h1>
-    <style>
-        input, select, textarea {
-            width: 100%;
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            padding: 0.5rem 0.75rem;
-            margin-bottom: 0.5rem;
-            outline: none;
-        }
-        input:focus, select:focus, textarea:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 2px #2563eb33;
-        }
-    </style>
-    <form method="post" enctype="multipart/form-data" class="space-y-4">
-        {% csrf_token %}
-        {% if form.errors %}
-            <div class="mb-2 text-red-600 text-sm">
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <div>{{ error }}</div>
-                    {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                    <div>{{ error }}</div>
-                {% endfor %}
+<div class="min-h-screen bg-gradient-to-br from-green-50 via-teal-50 to-blue-50 py-12 px-4">
+    <div class="max-w-3xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-full mb-4 shadow-lg">
+                <span class="text-3xl text-white">📦</span>
             </div>
-        {% endif %}
-        {% for field in form %}
-            <div>
-                <label class="block text-gray-700 text-sm mb-1">{{ field.label }}</label>
-                {{ field }}
-                {% if field.help_text %}
-                    <div class="text-xs text-gray-500">{{ field.help_text }}</div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                {% if form.instance.pk %}Edit Item{% else %}List a New Item{% endif %}
+            </h1>
+            <p class="text-gray-600">Share your items and earn by renting them out</p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white rounded-2xl shadow-xl p-8">
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Error Messages -->
+                {% if form.errors %}
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <span class="text-red-500 text-xl">⚠️</span>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-red-800">Please fix the following errors:</h3>
+                                <div class="mt-2 text-sm text-red-700">
+                                    {% for field in form %}
+                                        {% for error in field.errors %}
+                                            <p>• {{ field.label }}: {{ error }}</p>
+                                        {% endfor %}
+                                    {% endfor %}
+                                    {% for error in form.non_field_errors %}
+                                        <p>• {{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 {% endif %}
+
+                <!-- Basic Information Section -->
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-2xl">📝</span>
+                        <h2 class="text-xl font-semibold text-gray-800">Basic Information</h2>
+                    </div>
+
+                    <!-- Item Name -->
+                    <div>
+                        <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Item Name *
+                        </label>
+                        <input type="text" name="name" id="{{ form.name.id_for_label }}"
+                               value="{{ form.name.value|default:'' }}"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                               placeholder="e.g., HP Laptop, Mountain Bike, Digital Camera" required>
+                        <p class="mt-1 text-xs text-gray-500">Give your item a clear, descriptive name</p>
+                    </div>
+
+                    <!-- Category -->
+                    <div>
+                        <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Category *
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="text-gray-400">🏷️</span>
+                            </div>
+                            <select name="category" id="{{ form.category.id_for_label }}"
+                                    class="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition appearance-none" required>
+                                <option value="">Select a category...</option>
+                                {% for value, label in form.fields.category.choices %}
+                                    <option value="{{ value }}" {% if form.category.value == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Description *
+                        </label>
+                        <textarea name="description" id="{{ form.description.id_for_label }}" rows="4"
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                                  placeholder="Describe your item in detail... Include condition, specifications, and any important details" required>{{ form.description.value|default:'' }}</textarea>
+                        <p class="mt-1 text-xs text-gray-500">A detailed description helps attract more renters</p>
+                    </div>
+                </div>
+
+                <!-- Pricing Section -->
+                <div class="space-y-4 pt-4 border-t border-gray-200">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-2xl">💰</span>
+                        <h2 class="text-xl font-semibold text-gray-800">Pricing</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Price -->
+                        <div>
+                            <label for="{{ form.price.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Price (Rs.) *
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500">₹</span>
+                                </div>
+                                <input type="number" name="price" id="{{ form.price.id_for_label }}"
+                                       value="{{ form.price.value|default:'' }}" step="0.01" min="0"
+                                       class="pl-8 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                                       placeholder="100" required>
+                            </div>
+                        </div>
+
+                        <!-- Per Day Toggle -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Pricing Type
+                            </label>
+                            <div class="flex items-center h-12 px-4 border border-gray-300 rounded-lg bg-gray-50">
+                                <input type="checkbox" name="per_day" id="{{ form.per_day.id_for_label }}"
+                                       {% if form.per_day.value %}checked{% endif %}
+                                       class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded">
+                                <label for="{{ form.per_day.id_for_label }}" class="ml-2 text-sm text-gray-700">
+                                    Price is per day
+                                </label>
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500">Check if this is a daily rental rate</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item Photo Section -->
+                <div class="space-y-4 pt-4 border-t border-gray-200">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-2xl">📸</span>
+                        <h2 class="text-xl font-semibold text-gray-800">Item Photo</h2>
+                    </div>
+
+                    <div>
+                        <label for="{{ form.image.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Upload Image
+                        </label>
+                        
+                        <!-- Current Image Preview -->
+                        {% if form.instance.image %}
+                            <div class="mb-4">
+                                <p class="text-sm text-gray-600 mb-2">Current image:</p>
+                                <img src="{{ form.instance.image.url }}" alt="Current item" class="w-48 h-48 object-cover rounded-lg border-2 border-gray-200">
+                                <p class="text-xs text-gray-500 mt-2">Upload a new image to replace this one</p>
+                            </div>
+                        {% endif %}
+
+                        <!-- Upload Area -->
+                        <div class="flex items-center justify-center w-full">
+                            <label for="{{ form.image.id_for_label }}" class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <span class="text-5xl mb-3">📷</span>
+                                    <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                                    <p class="text-xs text-gray-500">PNG, JPG or JPEG (Recommended: 800x800px)</p>
+                                    <p class="text-xs text-green-600 font-medium mt-2">✨ Clear photos attract more renters!</p>
+                                </div>
+                                <input type="file" name="image" id="{{ form.image.id_for_label }}" class="hidden" accept="image/*">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Availability Section -->
+                <div class="space-y-4 pt-4 border-t border-gray-200">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-2xl">✅</span>
+                        <h2 class="text-xl font-semibold text-gray-800">Availability</h2>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <input type="checkbox" name="is_available" id="{{ form.is_available.id_for_label }}"
+                                   {% if form.is_available.value or not form.instance.pk %}checked{% endif %}
+                                   class="h-5 w-5 text-green-600 focus:ring-green-500 border-gray-300 rounded mt-0.5">
+                            <div class="ml-3">
+                                <label for="{{ form.is_available.id_for_label }}" class="text-sm font-medium text-gray-900">
+                                    Item is available for rent
+                                </label>
+                                <p class="text-xs text-gray-600 mt-1">Uncheck this if the item is currently unavailable or you want to temporarily pause rentals</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-semibold py-4 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-200">
+                        {% if form.instance.pk %}
+                            💾 Update Item
+                        {% else %}
+                            🚀 List Item for Rent
+                        {% endif %}
+                    </button>
+                    <a href="{% url 'home' %}" class="flex-shrink-0 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-4 px-6 rounded-lg text-center transition duration-200">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tips Section -->
+        <div class="mt-8 bg-white rounded-xl shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="text-2xl mr-2">💡</span>
+                Tips for a Successful Listing
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+                <div class="flex items-start space-x-2">
+                    <span>✓</span>
+                    <p><strong>Clear photos:</strong> Use good lighting and show the item from multiple angles</p>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span>✓</span>
+                    <p><strong>Honest description:</strong> Mention any wear, defects, or special conditions</p>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span>✓</span>
+                    <p><strong>Fair pricing:</strong> Research similar items to set competitive rates</p>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span>✓</span>
+                    <p><strong>Quick response:</strong> Reply promptly to rental requests for better reviews</p>
+                </div>
             </div>
-        {% endfor %}
-        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition w-full">Add Item</button>
-    </form>
+        </div>
+    </div>
 </div>
 {% endblock %}

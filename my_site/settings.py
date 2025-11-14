@@ -31,8 +31,18 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
-    'jazzmin',
+import importlib.util
+
+# Some optional third-party apps (like jazzmin) are nice-to-have but not required
+# for local development. If they're not installed in the environment, skip them so
+# the project can still run.
+optional_apps = []
+if importlib.util.find_spec('jazzmin') is not None:
+    optional_apps.append('jazzmin')
+if importlib.util.find_spec('widget_tweaks') is not None:
+    optional_apps.append('widget_tweaks')
+
+INSTALLED_APPS = optional_apps + [
     'pages.apps.PageConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,7 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'widget_tweaks',
+    # 'widget_tweaks' may be included via optional_apps if installed
 ]
 
 MIDDLEWARE = [
@@ -65,6 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'pages.context_processors.unread_notifications_count',
             ],
         },
     },

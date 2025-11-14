@@ -1,0 +1,93 @@
+"""
+Quick Start Guide: Testing BroRent Reports System
+==================================================
+
+Follow these steps to test the reports feature:
+"""
+
+print("=" * 70)
+print("BRORENT REPORTS - QUICK START GUIDE")
+print("=" * 70)
+
+print("\n📋 STEP 1: Ensure Database Has Data")
+print("-" * 70)
+print("Make sure you have:")
+print("  ✓ At least 1 staff/superuser")
+print("  ✓ A few items created")
+print("  ✓ Some rental requests (optional but recommended)")
+print("\nTo create a superuser:")
+print("  python manage.py createsuperuser")
+
+print("\n📋 STEP 2: Start the Server")
+print("-" * 70)
+print("  python manage.py runserver")
+
+print("\n📋 STEP 3: Login as Staff User")
+print("-" * 70)
+print("  1. Go to: http://127.0.0.1:8000/")
+print("  2. Login with your staff/superuser credentials")
+print("  3. Look for 'Reports' link in the navbar")
+
+print("\n📋 STEP 4: Access Reports Dashboard")
+print("-" * 70)
+print("  Click 'Reports' or go to: http://127.0.0.1:8000/admin-reports/")
+print("\n  You should see:")
+print("  ✓ Summary statistics cards")
+print("  ✓ Three report export cards (Items, Rentals, Users)")
+print("  ✓ Most borrowed items table")
+print("  ✓ Top borrowers and lenders")
+
+print("\n📋 STEP 5: Test PDF Export")
+print("-" * 70)
+print("  1. Click any 'PDF' button (red)")
+print("  2. File should download automatically")
+print("  3. Open with PDF viewer")
+print("  4. Verify professional formatting and data")
+
+print("\n📋 STEP 6: Test Excel Export")
+print("-" * 70)
+print("  1. Click any 'Excel' button (green)")
+print("  2. .xlsx file should download")
+print("  3. Open with Excel/LibreOffice")
+print("  4. Check data tables and formatting")
+
+print("\n✅ EXPECTED RESULTS")
+print("-" * 70)
+print("PDF Reports should contain:")
+print("  • Professional header with BroRent branding")
+print("  • Summary statistics")
+print("  • Formatted tables with colored headers")
+print("  • Complete data from your database")
+print("\nExcel Reports should contain:")
+print("  • Styled headers (blue background, white text)")
+print("  • All data in structured rows/columns")
+print("  • Multiple sheets for rentals report")
+print("  • Auto-adjusted column widths")
+
+print("\n🐛 TROUBLESHOOTING")
+print("-" * 70)
+print("Issue: 'Reports' link not visible")
+print("  → Ensure user.is_staff = True")
+print("\nIssue: Permission denied")
+print("  → Login as staff/superuser")
+print("\nIssue: Empty reports")
+print("  → Add sample data (items, users, rentals)")
+print("\nIssue: PDF/Excel won't open")
+print("  → Check browser downloads folder")
+print("  → Verify reportlab and openpyxl are installed")
+
+print("\n📊 REPORT URLS (for direct access)")
+print("-" * 70)
+print("Dashboard:        /admin-reports/")
+print("\nPDF Exports:")
+print("  Items:          /reports/items/pdf/")
+print("  Rentals:        /reports/rentals/pdf/")
+print("  Users:          /reports/users/pdf/")
+print("\nExcel Exports:")
+print("  Items:          /reports/items/excel/")
+print("  Rentals:        /reports/rentals/excel/")
+print("  Users:          /reports/users/excel/")
+
+print("\n" + "=" * 70)
+print("For detailed documentation, see: REPORTS_README.md")
+print("=" * 70)
