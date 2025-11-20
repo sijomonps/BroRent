@@ -61,6 +61,10 @@ def logout_view(request):
     logout(request)
     return redirect('home')
 
+def forgot_password_view(request):
+    """Display forgot password page with admin contact information"""
+    return render(request, 'forgot_password.html')
+
 from django.contrib.auth.decorators import login_required
 
 from django.db.models import Q
