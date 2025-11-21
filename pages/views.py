@@ -859,7 +859,7 @@ def rental_request_accept_view(request, pk):
         message=f"Your rental request for {rental.item.name} has been approved!"
     )
     
-    messages.success(request, f"Rental request from {rental.borrower.username} has been approved.")
+    messages.success(request, f"You have approved the rental request for {rental.item.name}.")
     return redirect('notifications')
 
 @login_required(login_url='login')
@@ -889,5 +889,5 @@ def rental_request_reject_view(request, pk):
         message=f"Your rental request for {rental.item.name} has been rejected."
     )
     
-    messages.success(request, f"Rental request from {rental.borrower.username} has been rejected.")
+    messages.success(request, f"You have rejected the rental request for {rental.item.name}.")
     return redirect('notifications')
