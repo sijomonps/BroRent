@@ -58,6 +58,7 @@ INSTALLED_APPS = optional_apps + [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'my_site.middleware.ServeMediaMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -161,14 +162,17 @@ cloudinary.config(
 )
 
 # Media files configuration
-if DEBUG:
-    # Use local storage in development
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-else:
-    # Use Cloudinary in production
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Use Cloudinary in production if credentials are provided
+if not DEBUG and CLOUDINARY_STORAGE['CLOUD_NAME']:
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    MEDIA_URL = '/media/'  # Still needed for URL generation
+else:
+    # Fallback: serve media files with WhiteNoise in production
+    WHITENOISE_USE_FINDERS = True
+    WHITENOISE_AUTOREFRESH = True
+    WHITENOISE_MAX_AGE = 500
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
